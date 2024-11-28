@@ -1,5 +1,5 @@
 ---
-title: "Indicateurs de devellopement par continent"
+title: "Indicateurs de développement par continent"
 format: 
   dashboard:
     code-tools: true
@@ -19,6 +19,14 @@ format:
 library('tidyverse')
 library('gapminder')
 library('knitr')
+
+espVieFR <- gapminder %>% 
+  filter(year == last(year), country == "France") %>% 
+  pull(lifeExp)
+
+pibhabFR <- gapminder %>% 
+  filter(year == last(year), country == "France") %>% 
+  pull(gdpPercap)
 ```
 
 # Indicateurs
@@ -27,23 +35,23 @@ library('knitr')
 
 ```{r}
 #| component: valuebox
-#| title: Espérance de vie en France en 2007
+#| title: Espérance de vie en France
 #| width: 15%
 list(
   icon = "heart-fill",
   color = "info",
-  value = gapminder %>% filter(year == "2007", country == "France") %>% pull(lifeExp) %>% round(0) %>% paste("ans")
+  value = paste(round(espVieFR, 0), "ans")
 )
 ```
 
 ```{r}
 #| component: valuebox
-#| title: PIB par français en 2007
+#| title: PIB par français
 #| width: 15%
 list(
   icon = "cash-coin",
   color = "secondary",
-  value = gapminder %>% filter(year == "2007", country == "France") %>% pull(gdpPercap) %>% round(0) %>% paste("$")
+  value = paste(round(pibhabFR, 0), "ans")
 )
 ```
 
