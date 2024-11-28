@@ -1,0 +1,130 @@
+---
+title: "Indicateurs de devellopement par continent"
+format: 
+  dashboard:
+    code-tools: true
+    theme: yeti
+    logo: "images/my_image.png"
+    nav-buttons:
+      - icon: twitter
+        href: https://twitter.com
+      - icon: github
+        href: https://github.com/RemiDumas/exemple_dashboard
+---
+
+```{r, packages}
+#| echo: false
+#| include: false
+
+library('tidyverse')
+library('gapminder')
+library('knitr')
+```
+
+# Indicateurs
+
+## Row {height = "65%"}
+
+```{r}
+#| component: valuebox
+#| title: Espérance de vie en France en 2007
+#| width: 15%
+list(
+  icon = "heart-fill",
+  color = "info",
+  value = gapminder %>% filter(year == "2007", country == "France") %>% pull(lifeExp) %>% round(0) %>% paste("ans")
+)
+```
+
+```{r}
+#| component: valuebox
+#| title: PIB par français en 2007
+#| width: 15%
+list(
+  icon = "cash-coin",
+  color = "secondary",
+  value = gapminder %>% filter(year == "2007", country == "France") %>% pull(gdpPercap) %>% round(0) %>% paste("$")
+)
+```
+
+```{r, espvie_pib}
+#| fig-width: 16
+#| width: 70%
+
+gapminder %>% filter(year == last(year)) %>% 
+  ggplot(aes(x = gdpPercap, y = lifeExp, size = pop, color = continent)) +
+  geom_point(alpha = 0.5) +
+  scale_x_log10() +
+  scale_size_continuous(range = c(1,20)) +
+  facet_wrap(facets = "continent", nrow = 1) +
+  labs(
+    title = paste("Espérance de vie et PIB par habitant en", last(gapminder$year)),
+    x = "PIB/hab. ($)",
+    y = "Espérance de vie (ans)"
+  ) +
+  theme_minimal(base_size = 20) +
+  theme(legend.position = "none",
+        panel.grid.minor = element_blank())
+```
+
+
+## Row {height = "35%"}
+```{r, pop}
+#| fig-width: 10
+gapminder %>% 
+  group_by(continent, year) %>% 
+  summarise(pop = sum(pop, na.rm = T)) %>% 
+  ggplot(aes(x = year, y = pop, color = continent)) +
+  geom_line() +
+  scale_y_log10(labels = scales::label_number(scale = 1e-6, suffix = " M")) +
+  labs(title = "Évolution de la population par continent",
+       caption = "Source: Gapminder",
+       color = "Continent",
+       y = "Population",
+       x = "Année") +
+  theme_minimal(base_size = 20)+
+  theme(panel.grid.minor = element_blank())
+```
+
+```{r, lifeExp}
+#| fig-width: 10
+gapminder %>% 
+  group_by(continent, year) %>% 
+  summarise(lifeExp = sum(pop*lifeExp, na.rm = T)/ sum(pop, na.rm = T)) %>% 
+  ggplot(aes(x = year, y = lifeExp, color = continent)) +
+  geom_line() +
+  scale_y_continuous(labels = scales::label_number(scale = 1, suffix = " ans")) +
+  labs(title = "Évolution de l'espérance de vie par continent",
+       caption = "Source: Gapminder",
+       color = "Continent",
+       y = "Espérance de vie",
+       x = "Année") +
+  theme_minimal(base_size = 20)+
+  theme(panel.grid.minor = element_blank())
+```
+
+
+# Données
+
+![](images/gapminder.png) Learn more about the Gapminder dataset at <https://www.gapminder.org/data/documentation/>
+
+
+```{r, affich_gapminder}
+kable(gapminder)
+```
+
+# A propos
+
+D'après l'exemple de JJ Allaire: 
+
+- [Dépôt Github](https://github.com/jjallaire/gapminder-dashboard/)
+- [Le dashboard](https://jjallaire.github.io/gapminder-dashboard/)
+
+Plus d'infos sur les dashboard Quarto:
+
+- [https://quarto.org/docs/dashboards/](https://quarto.org/docs/dashboards/)
+- [https://quarto.org/docs/reference/formats/dashboard.html](https://quarto.org/docs/reference/formats/dashboard.html)
+- [Vidéo de Melissa Van Bussel](https://www.youtube.com/watch?v=5zYrgRylkH0)
+
+# 
+
