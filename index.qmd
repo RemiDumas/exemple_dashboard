@@ -2,6 +2,7 @@
 title: "Indicateurs de développement par continent"
 format: 
   dashboard:
+    embed-resources: true
     code-tools: true
     theme: yeti
     logo: "images/my_image.png"
