@@ -52,7 +52,7 @@ list(
 list(
   icon = "cash-coin",
   color = "secondary",
-  value = paste(round(pibhabFR, 0), "ans")
+  value = paste(round(pibhabFR, 0), "$")
 )
 ```
 
